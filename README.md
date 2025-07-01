@@ -13,7 +13,7 @@ from pve_api import PVE
 
 # 创建PVE对象
 pve = PVE('192.168.1.100', 'root', 'password')
-# 获取主节点，True表示将内存及硬盘大小转换为GB
+# 获取主节点
 node = pve.get_nodes().query('node', 'pve')
 # 获取当前节点下的qemu虚拟机中名为Windows的虚拟机
 qemu = pve.get_node_qemu(node).query('name', 'Windows')
