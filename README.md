@@ -5,7 +5,6 @@
 ```
 pip install pve-api
 ```
-> 该方法暂不支持
 
 ## 示例
 ```python

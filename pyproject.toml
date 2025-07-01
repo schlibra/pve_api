@@ -1,10 +1,16 @@
 [project]
-name = "pve-api"
-version = "0.1.0"
+name = "pve_api"
+version = "1.0"
+authors = [
+    {name = "schlibra", email = "schlibra@163.com"}
+]
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "build>=1.2.2.post1",
     "dotenv>=0.9.9",
     "requests>=2.32.4",
+    "setuptools>=80.9.0",
+    "twine>=6.1.0",
 ]

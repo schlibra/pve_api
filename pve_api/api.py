@@ -806,12 +806,18 @@ class PVE:
         else:
             raise RequestException(res)
 
-    def get_node_qemu(self, node: PveNode):
+    def get_node_qemu(self, node: PveNode, convert_size: bool=False):
         res = self.__get(f"/nodes/{node.node}/qemu")
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 _data = []
                 for qemu in res.json()['data']:
+                    if convert_size:
+                        qemu["netin"] = to_string_size(qemu.pop("netin"))
+                        qemu["netout"] = to_string_size(qemu.pop("netout"))
+                        qemu["mem"] = to_string_size(qemu.pop("mem"))
+                        qemu["maxmem"] = to_string_size(qemu.pop("maxmem"))
+                        qemu["maxdisk"] = to_string_size(qemu.pop("maxdisk"))
                     _qemu = QemuItem()
                     _qemu.__dict__ = qemu
                     _data.append(_qemu)
