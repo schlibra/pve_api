@@ -696,6 +696,234 @@ class PVE:
         else:
             raise RequestException(res)
 
+    def get_node_disks_directory(self, node: PveNode):
+        res = self.__get(f"/nodes/{node.node}/disks/directory")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                _data = []
+                for directory in res.json()['data']:
+                    _directory = Directory()
+                    _directory.__dict__ = directory
+                    _data.append(_directory)
+                return MyList(_data)
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def add_node_disks_directory(self, node: PveNode, name: str, device: str, add_storage: bool=False, filesystem: str="ext4"):
+        res = self.__post(f"/nodes/{node.node}/disks/directory", {
+            "name": name,
+            "device": device,
+            "add_storage": add_storage,
+            "filesystem": filesystem
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def delete_node_disks_directory(self, node: PveNode, name: str, cleanup_config: bool=False, cleanup_disks: bool=False):
+        res = self.__delete(f"/nodes/{node.node}/disks/directory/{name}?cleanup-config={cleanup_config}&cleanup-disks={cleanup_disks}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_lvm(self, node: PveNode):
+        res = self.__get(f"/nodes/{node.node}/disks/lvm")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def add_node_disks_lvm(self, node: PveNode, name: str, device: str, add_storage: bool=False):
+        res = self.__post(f"/nodes/{node.node}/disks/lvm", {
+            "name": name,
+            "device": device,
+            "add_storage": add_storage
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def delete_node_disks_lvm(self, node: PveNode, name: str, cleanup_config: bool=False, cleanup_disks: bool=False):
+        res = self.__delete(f"/nodes/{node.node}/disks/lvm/{name}?cleanup-config={cleanup_config}&cleanup-disks={cleanup_disks}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_lvmthin(self, node: PveNode, convert_size: bool=False):
+        res = self.__get(f"/nodes/{node.node}/disks/lvmthin")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                _data = []
+                for lvmthin in res.json()['data']:
+                    if convert_size:
+                        lvmthin["lv_size"] = to_string_size(lvmthin["lv_size"])
+                        lvmthin["metadata_size"] = to_string_size(lvmthin["metadata_size"])
+                        lvmthin["metadata_used"] = to_string_size(lvmthin["metadata_used"])
+                        lvmthin["used"] = to_string_size(lvmthin["used"])
+                    _lvmthin = LvmThin()
+                    _lvmthin.__dict__ = lvmthin
+                    _data.append(_lvmthin)
+                return MyList(_data)
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def add_node_disks_lvmthin(self, node: PveNode, name: str, device: str, add_storage: bool=False):
+        res = self.__post(f"/nodes/{node.node}/disks/lvmthin", {
+            "name": name,
+            "device": device,
+            "add_storage": add_storage
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def delete_node_disks_lvmthin(self, node: PveNode, name: str, volume_group: str, cleanup_config: bool=False, cleanup_disks: bool=False):
+        res = self.__delete(f"/nodes/{node.node}/disks/lvmthin/{name}?volume-group={volume_group}&cleanup-config={cleanup_config}&cleanup-disks={cleanup_disks}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_zfs(self, node: PveNode, convert_size: bool=False):
+        res = self.__get(f"/nodes/{node.node}/disks/zfs")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                _data = []
+                for zfs in res.json()['data']:
+                    if convert_size:
+                        zfs["free"] = to_string_size(zfs["free"])
+                        zfs["size"] = to_string_size(zfs["size"])
+                    _zfs = ZfsPool()
+                    _zfs.__dict__ = zfs
+                    _data.append(_zfs)
+                return MyList(_data)
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def add_node_disks_zfs(self, node: PveNode, devices: str, name: str, raidlevel: str, add_storage: bool=False, ashift: int=12, compression: str="on", draid_config: str=""):
+        res = self.__post(f"/nodes/{node.node}/disks/zfs", {
+            "devices": devices,
+            "name": name,
+            "raidlevel": raidlevel,
+            "add_storage": add_storage,
+            "ashift": ashift,
+            "compression": compression,
+            "draid_config": draid_config
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_zfs_info(self, node: PveNode, name: str):
+        res = self.__get(f"/nodes/{node.node}/disks/zfs/{name}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def delete_node_disks_zfs(self, node: PveNode, name: str, cleanup_config: bool=False, cleanup_disks: bool=False):
+        res = self.__delete(f"/nodes/{node.node}/disks/zfs/{name}?cleanup-config={cleanup_config}&cleanup-disks={cleanup_disks}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def do_node_disks_initgpt(self, node: PveNode, disk: str, uuid: str=""):
+        res = self.__post(f"/nodes/{node.node}/disks/initgpt", {
+            "disk": disk,
+            "uuid": uuid
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_list(self, node: PveNode, include_partitions: bool=False, skipsmart: bool=False, _type: str="journal_disks", convert_size: bool=False):
+        res = self.__get(f"/nodes/{node.node}/disks/list?include-partitions={int(include_partitions)}&skipsmart={int(skipsmart)}&type={_type}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                _data = []
+                for disk in res.json()['data']:
+                    if convert_size:
+                        disk['size'] = to_string_size(disk['size'])
+                    _disk = LocalDisk()
+                    _disk.__dict__ = disk
+                    _data.append(_disk)
+                return MyList(_data)
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def get_node_disks_smart(self, node: PveNode, disk: LocalDisk, healthonly: bool=False):
+        res = self.__get(f"/nodes/{node.node}/disks/smart?disk={disk.devpath}&healthonly={int(healthonly)}")
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+    def do_node_disks_wipedisk(self, node: PveNode, disk: str):
+        res = self.__put(f"/nodes/{node.node}/disks/wipedisk", {
+            "disk": disk
+        })
+        if res.status_code == 200:
+            if res.json()['success'] == 1:
+                return res.json()['data']
+            else:
+                raise RequestException(res)
+        else:
+            raise RequestException(res)
+
+
+
     def get_node_qemu(self, node: PveNode, convert_size: bool=False):
         res = self.__get(f"/nodes/{node.node}/qemu")
         if res.status_code == 200:

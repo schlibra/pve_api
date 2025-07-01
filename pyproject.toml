@@ -4,7 +4,7 @@ version = "1.1.1"
 authors = [
     { name = "schlibra", email = "schlibra@163.com" }
 ]
-description = "Add your description here"
+description = "Python library for Proxmox VE API"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -15,3 +15,9 @@ dependencies = [
 #    "setuptools>=80.9.0",
 #    "twine>=6.1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/schlibra/pve_api"
+#Documentation = "https://github.com/schlibra/pve_api"
+Source = "https://github.com/schlibra/pve_api"
+Issues = "https://github.com/schlibra/pve_api/issues"

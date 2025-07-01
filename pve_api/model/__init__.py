@@ -7,3 +7,7 @@ from .AptPackage import AptPackage
 from .QemuCPU import QemuCPU
 from .QemuMachine import QemuMachine
 from .Certificate import Certificate
+from .Directory import Directory
+from .LvmThin import LvmThin
+from .ZfsPool import ZfsPool
+from .LocalDisk import LocalDisk
