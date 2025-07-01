@@ -106,26 +106,6 @@ class PVE:
         else:
             raise RequestException(res)
 
-    def get_node_info(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_apt(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/apt")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
     def get_node_apt_changelog(self, node: PveNode, package: str):
         res = self.__get(f"/nodes/{node.node}/apt/changelog?name={package}")
         if res.status_code == 200:
@@ -217,26 +197,6 @@ class PVE:
         else:
             raise RequestException(res)
 
-    def get_node_capabilities(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/capabilities")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_capabilities_qemu(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/capabilities/qemu")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
     def get_node_capabilities_qemu_cpu(self, node: PveNode, custom: bool=False, name: str="", vendor: str="", features: str=""):
         res = self.__get(f"/nodes/{node.node}/capabilities/qemu/cpu")
         if res.status_code == 200:
@@ -262,26 +222,6 @@ class PVE:
                     _machine.__dict__ = machine
                     _data.append(_machine)
                 return MyList(_data)
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/ceph")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph_cfg(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/ceph/cfg")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
             else:
                 raise RequestException(res)
         else:
@@ -317,31 +257,11 @@ class PVE:
         else:
             raise RequestException(res)
 
-    def get_node_ceph_fs(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/ceph/fs")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
     def add_node_ceph_fs(self, node: PveNode, name: str="cephfs", add_storage: bool=False, pg_num: int=128):
         res = self.__post(f"/nodes/{node.node}/ceph/fs/{name}", {
             "add_storage": add_storage,
             "pg_num": pg_num
         })
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph_mds(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/ceph/mds")
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 return res.json()['data']
@@ -364,16 +284,6 @@ class PVE:
 
     def delete_node_ceph_mds(self, node: PveNode, name: str):
         res = self.__delete(f"/nodes/{node.node}/ceph/mds/{name}")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph_mgr(self, node: PveNode):
-        res = self.__get(f"/nodes/{node.node}/ceph/mgr")
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 return res.json()['data']
@@ -455,16 +365,6 @@ class PVE:
             "wal_dev": wal_dev,
             "wal_dev_size": wal_dev_size
         })
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph_osd_index(self, node: PveNode, osdid: int):
-        res = self.__get(f"/nodes/{node.node}/ceph/osd/{osdid}")
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 return res.json()['data']
@@ -567,16 +467,6 @@ class PVE:
             "targer_size_ratio": targer_size_ratio,
             "name": name
         })
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-    def get_node_ceph_pool_index(self, node: PveNode, name: str):
-        res = self.__get(f"/nodes/{node.node}/ceph/pool/{name}")
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 return res.json()['data']
@@ -813,11 +703,11 @@ class PVE:
                 _data = []
                 for qemu in res.json()['data']:
                     if convert_size:
-                        qemu["netin"] = to_string_size(qemu.pop("netin"))
-                        qemu["netout"] = to_string_size(qemu.pop("netout"))
-                        qemu["mem"] = to_string_size(qemu.pop("mem"))
-                        qemu["maxmem"] = to_string_size(qemu.pop("maxmem"))
-                        qemu["maxdisk"] = to_string_size(qemu.pop("maxdisk"))
+                        qemu["netin"] = to_string_size(qemu["netin"])
+                        qemu["netout"] = to_string_size(qemu["netout"])
+                        qemu["mem"] = to_string_size(qemu["mem"])
+                        qemu["maxmem"] = to_string_size(qemu["maxmem"])
+                        qemu["maxdisk"] = to_string_size(qemu["maxdisk"])
                     _qemu = QemuItem()
                     _qemu.__dict__ = qemu
                     _data.append(_qemu)
