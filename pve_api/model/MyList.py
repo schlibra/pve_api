@@ -16,6 +16,15 @@ class MyList(Iterable):
     def __setitem__(self, index, value):
         self.list[index] = value
 
+    def __str__(self):
+        result = 'MyList ['
+        for (item, index) in zip(self.list, range(len(self.list))):
+            result += f"\n\t{str(item)}"
+            if index < len(self.list) - 1:
+                result += ', '
+        result += '\n]'
+        return result
+
     def query(self, key, value):
         for item in self.list:
             if hasattr(item, key):

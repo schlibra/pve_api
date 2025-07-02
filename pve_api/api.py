@@ -1,11 +1,19 @@
-import array
-from typing import Union
-
 import requests
 import urllib3
 
 from .exception import *
-from .model import *
+from .model.PveNode import PveNode
+from .model.Version import Version
+from .model.MyList import MyList
+from .model.QemuCPU import QemuCPU
+from .model.Network import Network
+from .model.QemuMachine import QemuMachine
+from .model.Directory import Directory
+from .model.AptPackage import AptPackage
+from .model.Certificate import Certificate
+from .model.LvmThin import LvmThin
+from .model.LocalDisk import LocalDisk
+from .model.ZfsPool import ZfsPool
 from .util.SizeConvert import *
 
 
@@ -45,14 +53,6 @@ class PVE:
             }, **kwargs)
         else:
             return requests.put(self.__build_url__(path), data=data, verify=verify, headers=headers, **kwargs)
-
-    @staticmethod
-    def __parse_node(node: Union[PveNode, str]):
-        if isinstance(node, PveNode):
-            node_id = node.node
-        else:
-            node_id = node
-        return node_id
 
     def __init__(self, host, username, password):
         urllib3.disable_warnings()
@@ -94,6 +94,7 @@ class PVE:
                 for node in res.json()['data']:
                     _node = PveNode()
                     _node.__dict__ = node
+                    _node._PveNode__pve = self
                     if size_convert:
                         _node.mem = to_string_size(_node.mem)
                         _node.disk = to_string_size(_node.disk)
@@ -917,29 +918,6 @@ class PVE:
         if res.status_code == 200:
             if res.json()['success'] == 1:
                 return res.json()['data']
-            else:
-                raise RequestException(res)
-        else:
-            raise RequestException(res)
-
-
-
-    def get_node_qemu(self, node: PveNode, convert_size: bool=False):
-        res = self.__get(f"/nodes/{node.node}/qemu")
-        if res.status_code == 200:
-            if res.json()['success'] == 1:
-                _data = []
-                for qemu in res.json()['data']:
-                    if convert_size:
-                        qemu["netin"] = to_string_size(qemu["netin"])
-                        qemu["netout"] = to_string_size(qemu["netout"])
-                        qemu["mem"] = to_string_size(qemu["mem"])
-                        qemu["maxmem"] = to_string_size(qemu["maxmem"])
-                        qemu["maxdisk"] = to_string_size(qemu["maxdisk"])
-                    _qemu = QemuItem()
-                    _qemu.__dict__ = qemu
-                    _data.append(_qemu)
-                return MyList(_data)
             else:
                 raise RequestException(res)
         else:
